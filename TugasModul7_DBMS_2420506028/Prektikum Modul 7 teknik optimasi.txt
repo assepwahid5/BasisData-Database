@@ -1,0 +1,225 @@
+Microsoft Windows [Version 10.0.26100.4061]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\LENOVO>cd c:\xampp\mysql\bin
+
+c:\xampp\mysql\bin>mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 44
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> create database db_penjualan;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> use db_penjualan
+Database changed
+MariaDB [db_penjualan]> create table produk (
+    -> kode_produk varchar(10) primary key,
+    -> nama_produk varchar(50),
+    -> harga int
+    -> );
+Query OK, 0 rows affected (0.015 sec)
+
+MariaDB [db_penjualan]> create table transaksi (
+    -> id_transaksi int auto_increment primary key,
+    -> kode_produk varchar(10),
+    -> jumlah int,
+    -> total_harga int,
+    -> foreign key (kode_produk) references produk(kode_produk)
+    -> );
+Query OK, 0 rows affected (0.025 sec)
+
+MariaDB [db_penjualan]> create table pelanggan (
+    -> id_pelanggan int auto_increment primary key,
+    -> nama_pelanggan varchar(50),
+    -> alamat varchar(100)
+    -> );
+Query OK, 0 rows affected (0.009 sec)
+
+MariaDB [db_penjualan]> insert into produk values ('P001','Laptop',7000000),('P002','Mouse',150000);
+Query OK, 2 rows affected (0.022 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> insert into transaksi (kode_produk,jumlah, total_harga) values ('P001',2,14000000),('P002',5,750000);
+Query OK, 2 rows affected (0.005 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> insert into pelanggan (nama_pelanggan, alamat) values ('Andi','Jl. Merdeka'), ('Budi','Jl. Sudirman');
+Query OK, 2 rows affected (0.007 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> create indeks idx_harga on produk(harga);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'indeks idx_harga on produk(harga)' at line 1
+MariaDB [db_penjualan]> create index idx_harga on produk(harga);
+Query OK, 0 rows affected (0.046 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> drop index idx_harga on produk(harga);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '(harga)' at line 1
+MariaDB [db_penjualan]> drop index idx_harga on produk;
+Query OK, 0 rows affected (0.018 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> explain select * from produk where harga > 5000000;
++------+-------------+--------+------+---------------+------+---------+------+------+-------------+
+| id   | select_type | table  | type | possible_keys | key  | key_len | ref  | rows | Extra       |
++------+-------------+--------+------+---------------+------+---------+------+------+-------------+
+|    1 | SIMPLE      | produk | ALL  | NULL          | NULL | NULL    | NULL | 2    | Using where |
++------+-------------+--------+------+---------------+------+---------+------+------+-------------+
+1 row in set (0.018 sec)
+
+MariaDB [db_penjualan]> create index idx_harga on produk(harga);
+Query OK, 0 rows affected (0.010 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> explain select * from produk where harga > 5000000;
++------+-------------+--------+-------+---------------+-----------+---------+------+------+-----------------------+
+| id   | select_type | table  | type  | possible_keys | key       | key_len | ref  | rows | Extra                 |
++------+-------------+--------+-------+---------------+-----------+---------+------+------+-----------------------+
+|    1 | SIMPLE      | produk | range | idx_harga     | idx_harga | 5       | NULL | 1    | Using index condition |
++------+-------------+--------+-------+---------------+-----------+---------+------+------+-----------------------+
+1 row in set (0.005 sec)
+
+MariaDB [db_penjualan]> select * from produk where harga > (select avg(harga) from produk);
++-------------+-------------+---------+
+| kode_produk | nama_produk | harga   |
++-------------+-------------+---------+
+| P001        | Laptop      | 7000000 |
++-------------+-------------+---------+
+1 row in set (0.013 sec)
+
+MariaDB [db_penjualan]> create index idx_total_harga on transaksi(total_harga);
+Query OK, 0 rows affected (0.067 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> select * from transaksi where total_harga > 2000000;
++--------------+-------------+--------+-------------+
+| id_transaksi | kode_produk | jumlah | total_harga |
++--------------+-------------+--------+-------------+
+|            1 | P001        |      2 |    14000000 |
++--------------+-------------+--------+-------------+
+1 row in set (0.004 sec)
+
+MariaDB [db_penjualan]> drop index idx_total_harga on transaksi;
+Query OK, 0 rows affected (0.010 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> select * from transaksi where total_harga > 2000000;
++--------------+-------------+--------+-------------+
+| id_transaksi | kode_produk | jumlah | total_harga |
++--------------+-------------+--------+-------------+
+|            1 | P001        |      2 |    14000000 |
++--------------+-------------+--------+-------------+
+1 row in set (0.000 sec)
+
+MariaDB [db_penjualan]> select * from transaksi where total_harga > 2000000;
++--------------+-------------+--------+-------------+
+| id_transaksi | kode_produk | jumlah | total_harga |
++--------------+-------------+--------+-------------+
+|            1 | P001        |      2 |    14000000 |
++--------------+-------------+--------+-------------+
+1 row in set (0.000 sec)
+
+MariaDB [db_penjualan]> explain select * from transaksi where total_harga > 2000000;
++------+-------------+-----------+------+---------------+------+---------+------+------+-------------+
+| id   | select_type | table     | type | possible_keys | key  | key_len | ref  | rows | Extra       |
++------+-------------+-----------+------+---------------+------+---------+------+------+-------------+
+|    1 | SIMPLE      | transaksi | ALL  | NULL          | NULL | NULL    | NULL | 2    | Using where |
++------+-------------+-----------+------+---------------+------+---------+------+------+-------------+
+1 row in set (0.000 sec)
+
+MariaDB [db_penjualan]> create index idx_total_harga on transaksi(total_harga);
+Query OK, 0 rows affected (0.011 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> explain select * from transaksi where total_harga > 2000000;
++------+-------------+-----------+-------+-----------------+-----------------+---------+------+------+-----------------------+
+| id   | select_type | table     | type  | possible_keys   | key             | key_len | ref  | rows | Extra                 |
++------+-------------+-----------+-------+-----------------+-----------------+---------+------+------+-----------------------+
+|    1 | SIMPLE      | transaksi | range | idx_total_harga | idx_total_harga | 5       | NULL | 1    | Using index condition |
++------+-------------+-----------+-------+-----------------+-----------------+---------+------+------+-----------------------+
+1 row in set (0.001 sec)
+
+MariaDB [db_penjualan]> select * from transaksi where total_harga > 2000000;
++--------------+-------------+--------+-------------+
+| id_transaksi | kode_produk | jumlah | total_harga |
++--------------+-------------+--------+-------------+
+|            1 | P001        |      2 |    14000000 |
++--------------+-------------+--------+-------------+
+1 row in set (0.000 sec)
+
+MariaDB [db_penjualan]> alter table transaksi add id_pelanggan int auto_increment;
+ERROR 1075 (42000): Incorrect table definition; there can be only one auto column and it must be defined as a key
+MariaDB [db_penjualan]> alter table transaksi add id_pelanggan int;
+Query OK, 0 rows affected (0.020 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> alter table transaksi add constraint fk_id_pelanggan foreign key (id_pelanggan) references pelanggan(id_pelanggan);
+Query OK, 2 rows affected (0.072 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> select a.nama_pelanggan, sum(b.total_harga) as total_transaksi from pelanggan a join transaksi b on a.id_pelanggan = b.id_pelanggan group by a.nama_pelanggan;
+Empty set (0.024 sec)
+
+MariaDB [db_penjualan]> insert into pelanggan (id_pelanggan) values ('PL01'),('PL02');
+Query OK, 2 rows affected, 2 warnings (0.003 sec)
+Records: 2  Duplicates: 0  Warnings: 2
+
+MariaDB [db_penjualan]> insert into transaksi (id_pelanggan) values ('1'),('2');
+Query OK, 2 rows affected (0.003 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> select a.nama_pelanggan, sum(b.total_harga) as total_transaksi from pelanggan a join transaksi b on a.id_pelanggan = b.id_pelanggan group by a.nama_pelanggan;
++----------------+-----------------+
+| nama_pelanggan | total_transaksi |
++----------------+-----------------+
+| Andi           |            NULL |
+| Budi           |            NULL |
++----------------+-----------------+
+2 rows in set (0.001 sec)
+
+MariaDB [db_penjualan]> update transaksi set id_pelanggan = 1 where id_transaksi = 1;
+Query OK, 1 row affected (0.004 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [db_penjualan]> update transaksi set id_pelanggan = 2 where id_transaksi = 2;
+Query OK, 1 row affected (0.002 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [db_penjualan]> select a.nama_pelanggan, sum(b.total_harga) as total_transaksi from pelanggan a join transaksi b on a.id_pelanggan = b.id_pelanggan group by a.nama_pelanggan;
++----------------+-----------------+
+| nama_pelanggan | total_transaksi |
++----------------+-----------------+
+| Andi           |        14000000 |
+| Budi           |          750000 |
++----------------+-----------------+
+2 rows in set (0.001 sec)
+
+MariaDB [db_penjualan]> explain select a.nama_pelanggan, sum(b.total_harga) as total_transaksi from pelanggan a join transaksi b on a.id_pelanggan = b.id_pelanggan group by a.nama_pelanggan;
++------+-------------+-------+------+-----------------+------+---------+------+------+-------------------------------------------------+
+| id   | select_type | table | type | possible_keys   | key  | key_len | ref  | rows | Extra                                           |
++------+-------------+-------+------+-----------------+------+---------+------+------+-------------------------------------------------+
+|    1 | SIMPLE      | a     | ALL  | PRIMARY         | NULL | NULL    | NULL | 2    | Using temporary; Using filesort                 |
+|    1 | SIMPLE      | b     | ALL  | fk_id_pelanggan | NULL | NULL    | NULL | 2    | Using where; Using join buffer (flat, BNL join) |
++------+-------------+-------+------+-----------------+------+---------+------+------+-------------------------------------------------+
+2 rows in set (0.027 sec)
+
+MariaDB [db_penjualan]> create unique index idx_kode_produk on produk(kode_produk);
+Query OK, 0 rows affected (0.065 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [db_penjualan]> explain select * from produk where kode_produk = 'P001';
++------+-------------+--------+-------+-------------------------+---------+---------+-------+------+-------+
+| id   | select_type | table  | type  | possible_keys           | key     | key_len | ref   | rows | Extra |
++------+-------------+--------+-------+-------------------------+---------+---------+-------+------+-------+
+|    1 | SIMPLE      | produk | const | PRIMARY,idx_kode_produk | PRIMARY | 42      | const | 1    |       |
++------+-------------+--------+-------+-------------------------+---------+---------+-------+------+-------+
+1 row in set (0.022 sec)
+
+MariaDB [db_penjualan]>
+
