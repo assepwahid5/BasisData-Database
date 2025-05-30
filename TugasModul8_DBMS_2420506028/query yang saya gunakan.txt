@@ -1,0 +1,556 @@
+USER ROOT
+
+Microsoft Windows [Version 10.0.26100.4061]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\LENOVO>cd c:\xampp\mysql\bin
+
+c:\xampp\mysql\bin>mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 46
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> CREATE DATABASE db_kampus;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> USE db_kampus;
+Database changed
+MariaDB [db_kampus]> CREATE TABLE mahasiswa (
+    ->     nim CHAR(10) PRIMARY KEY,
+    ->     nama VARCHAR(50),
+    ->     jurusan VARCHAR(30)
+    -> );
+Query OK, 0 rows affected (0.015 sec)
+
+MariaDB [db_kampus]> CREATE TABLE matakuliah (
+    ->     kode_mk CHAR(6) PRIMARY KEY,
+    ->     nama_mk VARCHAR(50),
+    ->     sks INT
+    -> );
+Query OK, 0 rows affected (0.008 sec)
+
+MariaDB [db_kampus]>
+MariaDB [db_kampus]> CREATE TABLE dosen (
+    ->     nip CHAR(10) PRIMARY KEY,
+    ->     nama VARCHAR(50),
+    ->     bidang VARCHAR(30)
+    -> );
+Query OK, 0 rows affected (0.009 sec)
+
+MariaDB [db_kampus]> INSERT INTO mahasiswa (nim, nama, jurusan) VALUES
+    -> ('2201000001', 'Asep Nugraha', 'Teknik Informatika'),
+    -> ('2201000002', 'Rina Marlina', 'Sistem Informasi'),
+    -> ('2201000003', 'Budi Santoso', 'Teknik Informatika'),
+    -> ('2201000004', 'Siti Aminah', 'Sistem Informasi'),
+    -> ('2201000005', 'Agus Pratama', 'Teknik Informatika'),
+    -> ('2201000006', 'Dina Lestari', 'Sistem Informasi'),
+    -> ('2201000007', 'Tono Riyadi', 'Teknik Elektro'),
+    -> ('2201000008', 'Maya Safitri', 'Teknik Elektro'),
+    -> ('2201000009', 'Hendra Wijaya', 'Teknik Informatika'),
+    -> ('2201000010', 'Fitri Handayani', 'Sistem Informasi');
+Query OK, 10 rows affected (0.006 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+MariaDB [db_kampus]> INSERT INTO matakuliah (kode_mk, nama_mk, sks) VALUES
+    -> ('MK001', 'Algoritma dan Pemrograman', 3),
+    -> ('MK002', 'Struktur Data', 3),
+    -> ('MK003', 'Basis Data', 3),
+    -> ('MK004', 'Jaringan Komputer', 3),
+    -> ('MK005', 'Pemrograman Web', 3),
+    -> ('MK006', 'Kalkulus', 2),
+    -> ('MK007', 'Kewirausahaan', 2),
+    -> ('MK008', 'Sistem Operasi', 3),
+    -> ('MK009', 'Manajemen Proyek TI', 2),
+    -> ('MK010', 'Keamanan Informasi', 3);
+Query OK, 10 rows affected (0.004 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+MariaDB [db_kampus]> INSERT INTO dosen (nip, nama, bidang) VALUES
+    -> ('1980010101', 'Dr. Andi Wijaya', 'Pemrograman'),
+    -> ('1982020202', 'Dr. Lina Marlina', 'Jaringan Komputer'),
+    -> ('1983030303', 'Dr. Taufik Hidayat', 'Basis Data'),
+    -> ('1984040404', 'Dr. Rina Wulandari', 'Sistem Informasi'),
+    -> ('1985050505', 'Dr. Bambang Suryo', 'Teknik Elektro'),
+    -> ('1986060606', 'Dr. Sari Lestari', 'Algoritma'),
+    -> ('1987070707', 'Dr. Yusuf Rahman', 'Keamanan Informasi'),
+    -> ('1988080808', 'Dr. Dewi Sartika', 'Manajemen Proyek'),
+    -> ('1989090909', 'Dr. Anton Gunawan', 'Kalkulus'),
+    -> ('1990010101', 'Dr. Nia Ramadhani', 'Kewirausahaan');
+Query OK, 10 rows affected (0.004 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+MariaDB [db_kampus]> CREATE USER 'user_admin'@'localhost' IDENTIFIED BY 'admin123';
+ERROR 1396 (HY000): Operation CREATE USER failed for 'user_admin'@'localhost'
+MariaDB [db_kampus]> CREATE USER 'user_mhs'@'localhost' IDENTIFIED BY 'mhs123';
+ERROR 1396 (HY000): Operation CREATE USER failed for 'user_mhs'@'localhost'
+MariaDB [db_kampus]> CREATE USER 'user_dosen'@'localhost' IDENTIFIED BY 'dosen123';
+ERROR 1396 (HY000): Operation CREATE USER failed for 'user_dosen'@'localhost'
+MariaDB [db_kampus]> select user test@localhost;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '@localhost' at line 1
+MariaDB [db_kampus]> select user from mysql.user;
++------------+
+| User       |
++------------+
+| role_dosen |
+| root       |
+| root       |
+| pma        |
+| root       |
++------------+
+5 rows in set (0.001 sec)
+
+MariaDB [db_kampus]> CREATE USER 'user_admin'@'localhost' IDENTIFIED BY 'admin123';
+Query OK, 0 rows affected (0.003 sec)
+
+MariaDB [db_kampus]> CREATE USER 'user_mhs'@'localhost' IDENTIFIED BY 'mhs123';
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [db_kampus]> CREATE USER 'user_dosen'@'localhost' IDENTIFIED BY 'dosen123';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [db_kampus]> GRANT ALL PRIVILEGES ON db_kampus.* TO 'user_admin'@'localhost';
+Query OK, 0 rows affected (0.004 sec)
+
+MariaDB [db_kampus]> GRANT SELECT ON db_kampus.matakuliah TO 'user_mhs'@'localhost';
+Query OK, 0 rows affected (0.003 sec)
+
+MariaDB [db_kampus]> CREATE ROLE 'role_dosen';
+Query OK, 0 rows affected (0.003 sec)
+
+MariaDB [db_kampus]> GRANT SELECT, INSERT ON db_kampus.mahasiswa TO 'role_dosen';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [db_kampus]> GRANT 'role_dosen' TO 'user_dosen'@'localhost';
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [db_kampus]> GRANT SELECT, INSERT ON db_kampus.mahasiswa TO 'user_dosen'@'localhost';
+Query OK, 0 rows affected (0.003 sec)
+
+MariaDB [db_kampus]> REVOKE SELECT ON db_kampus.matakuliah FROM 'user_mhs'@'localhost';
+Query OK, 0 rows affected (0.003 sec)
+
+MariaDB [db_kampus]> CREATE TABLE tagihan (
+    ->     id_tagihan INT AUTO_INCREMENT PRIMARY KEY,
+    ->     nim CHAR(10),
+    ->     jumlah INT,
+    ->     status VARCHAR(20),
+    ->     FOREIGN KEY (nim) REFERENCES mahasiswa(nim)
+    -> );
+Query OK, 0 rows affected (0.022 sec)
+
+MariaDB [db_kampus]> INSERT INTO mahasiswa (nim, nama, jurusan) VALUES
+    -> ('1234567890', 'Andi', 'Informatika'),
+    -> ('1234567891', 'Budi', 'Sistem Informasi'),
+    -> ('1234567892', 'Citra', 'Teknik Komputer'),
+    -> ('1234567893', 'Dina', 'Informatika'),
+    -> ('1234567894', 'Eka', 'Sistem Informasi'),
+    -> ('1234567895', 'Fajar', 'Teknik Komputer'),
+    -> ('1234567896', 'Gita', 'Informatika'),
+    -> ('1234567897', 'Hadi', 'Sistem Informasi'),
+    -> ('1234567898', 'Ika', 'Teknik Komputer'),
+    -> ('1234567899', 'Joko', 'Informatika');
+ERROR 1062 (23000): Duplicate entry '1234567890' for key 'PRIMARY'
+MariaDB [db_kampus]> INSERT INTO mahasiswa (nim, nama, jurusan) VALUES
+    -> ('1234567800', 'Lina', 'Teknik Komputer'),
+    ->
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 2
+MariaDB [db_kampus]>
+MariaDB [db_kampus]>
+MariaDB [db_kampus]>
+MariaDB [db_kampus]>
+MariaDB [db_kampus]>
+MariaDB [db_kampus]>
+MariaDB [db_kampus]>
+MariaDB [db_kampus]>
+MariaDB [db_kampus]> INSERT INTO tagihan (nim, jumlah, status) VALUES
+    -> ('1234567890', 2500000, 'Belum Lunas'),
+    -> ('1234567891', 3000000, 'Lunas'),
+    -> ('1234567892', 2000000, 'Belum Lunas'),
+    -> ('1234567893', 2500000, 'Lunas'),
+    -> ('1234567894', 3000000, 'Belum Lunas'),
+    -> ('1234567895', 2000000, 'Lunas'),
+    -> ('1234567896', 2500000, 'Belum Lunas'),
+    -> ('1234567897', 3000000, 'Lunas'),
+    -> ('1234567898', 2000000, 'Belum Lunas'),
+    -> ('1234567899', 2500000, 'Lunas');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`db_kampus`.`tagihan`, CONSTRAINT `tagihan_ibfk_1` FOREIGN KEY (`nim`) REFERENCES `mahasiswa` (`nim`))
+MariaDB [db_kampus]> INSERT INTO tagihan (nim, jumlah, status) VALUES
+    -> ('2201000001', 2500000, 'Belum Lunas'),
+    -> ('2201000002', 2750000, 'Lunas'),
+    -> ('2201000003', 3000000, 'Belum Lunas'),
+    -> ('2201000004', 2000000, 'Lunas'),
+    -> ('2201000005', 2500000, 'Belum Lunas'),
+    -> ('2201000006', 2800000, 'Lunas'),
+    -> ('2201000007', 2200000, 'Belum Lunas'),
+    -> ('2201000008', 2400000, 'Lunas'),
+    -> ('2201000009', 2600000, 'Belum Lunas'),
+    -> ('2201000010', 2700000, 'Lunas');
+Query OK, 10 rows affected (0.002 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+MariaDB [db_kampus]> CREATE ROLE 'role_keuangan';
+Query OK, 0 rows affected (0.003 sec)
+
+MariaDB [db_kampus]> GRANT SELECT, UPDATE ON db_kampus.tagihan TO 'role_keuangan';
+Query OK, 0 rows affected (0.003 sec)
+
+MariaDB [db_kampus]> CREATE USER 'user_keu'@'localhost' IDENTIFIED BY 'keu123';
+Query OK, 0 rows affected (0.004 sec)
+
+MariaDB [db_kampus]> GRANT 'role_keuangan' TO 'user_keu'@'localhost';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [db_kampus]> GRANT SELECT, UPDATE ON db_kampus.tagihan TO 'user_keu'@'localhost';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [db_kampus]> SET DEFAULT ROLE 'role_dosen' TO 'user_dosen'@'localhost';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'TO 'user_dosen'@'localhost'' at line 1
+MariaDB [db_kampus]> SET DEFAULT ROLE 'role_dosen' FOR 'user_dosen'@'localhost';
+Query OK, 0 rows affected (0.007 sec)
+
+MariaDB [db_kampus]> SET DEFAULT ROLE 'role_keuangan' FOR 'user_keu'@'localhost';
+Query OK, 0 rows affected (0.019 sec)
+
+MariaDB [db_kampus]>
+
+USER MAHASISWA
+
+Microsoft Windows [Version 10.0.26100.4061]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\LENOVO>cd c:\xampp\mysql\bin
+
+c:\xampp\mysql\bin>mysql -u user_mhs -p
+Enter password: ******
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 171
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SELECT * FROM db_kampus.matakuliah;
++---------+---------------------------+------+
+| kode_mk | nama_mk                   | sks  |
++---------+---------------------------+------+
+| MK001   | Algoritma dan Pemrograman |    3 |
+| MK002   | Struktur Data             |    3 |
+| MK003   | Basis Data                |    3 |
+| MK004   | Jaringan Komputer         |    3 |
+| MK005   | Pemrograman Web           |    3 |
+| MK006   | Kalkulus                  |    2 |
+| MK007   | Kewirausahaan             |    2 |
+| MK008   | Sistem Operasi            |    3 |
+| MK009   | Manajemen Proyek TI       |    2 |
+| MK010   | Keamanan Informasi        |    3 |
++---------+---------------------------+------+
+10 rows in set (0.000 sec)
+
+MariaDB [(none)]> SELECT * FROM db_kampus.matakuliah;
+ERROR 1142 (42000): SELECT command denied to user 'user_mhs'@'localhost' for table `db_kampus`.`matakuliah`
+MariaDB [(none)]> SELECT * FROM db_kampus.mahasiswa;
+ERROR 1142 (42000): SELECT command denied to user 'user_mhs'@'localhost' for table `db_kampus`.`mahasiswa`
+MariaDB [(none)]> INSERT INTO db_kampus.matakuliah VALUES ('IF2020', 'Jaringan', 3);
+ERROR 1142 (42000): INSERT command denied to user 'user_mhs'@'localhost' for table `db_kampus`.`matakuliah`
+MariaDB [(none)]>
+
+USER DOSEN
+
+Microsoft Windows [Version 10.0.26100.4061]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\LENOVO>cd c:\xampp\mysql\bin
+
+c:\xampp\mysql\bin>mysql -u user_dosen -p
+Enter password: ********
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 172
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SELECT * FROM db_kampus.mahasiswa;
++------------+-----------------+--------------------+
+| nim        | nama            | jurusan            |
++------------+-----------------+--------------------+
+| 2201000001 | Asep Nugraha    | Teknik Informatika |
+| 2201000002 | Rina Marlina    | Sistem Informasi   |
+| 2201000003 | Budi Santoso    | Teknik Informatika |
+| 2201000004 | Siti Aminah     | Sistem Informasi   |
+| 2201000005 | Agus Pratama    | Teknik Informatika |
+| 2201000006 | Dina Lestari    | Sistem Informasi   |
+| 2201000007 | Tono Riyadi     | Teknik Elektro     |
+| 2201000008 | Maya Safitri    | Teknik Elektro     |
+| 2201000009 | Hendra Wijaya   | Teknik Informatika |
+| 2201000010 | Fitri Handayani | Sistem Informasi   |
++------------+-----------------+--------------------+
+10 rows in set (0.001 sec)
+
+MariaDB [(none)]> INSERT INTO db_kampus.mahasiswa VALUES ('1234567890', 'Andi', 'Informatika');
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [(none)]> SELECT * FROM db_kampus.mahasiswa;
++------------+-----------------+--------------------+
+| nim        | nama            | jurusan            |
++------------+-----------------+--------------------+
+| 1234567890 | Andi            | Informatika        |
+| 2201000001 | Asep Nugraha    | Teknik Informatika |
+| 2201000002 | Rina Marlina    | Sistem Informasi   |
+| 2201000003 | Budi Santoso    | Teknik Informatika |
+| 2201000004 | Siti Aminah     | Sistem Informasi   |
+| 2201000005 | Agus Pratama    | Teknik Informatika |
+| 2201000006 | Dina Lestari    | Sistem Informasi   |
+| 2201000007 | Tono Riyadi     | Teknik Elektro     |
+| 2201000008 | Maya Safitri    | Teknik Elektro     |
+| 2201000009 | Hendra Wijaya   | Teknik Informatika |
+| 2201000010 | Fitri Handayani | Sistem Informasi   |
++------------+-----------------+--------------------+
+11 rows in set (0.001 sec)
+
+MariaDB [(none)]> SELECT * FROM db_kampus.dosen;
+ERROR 1142 (42000): SELECT command denied to user 'user_dosen'@'localhost' for table `db_kampus`.`dosen`
+MariaDB [(none)]> INSERT INTO db_kampus.dosen VALUES ('1234567890', 'Andi', 'Informatika');
+ERROR 1142 (42000): INSERT command denied to user 'user_dosen'@'localhost' for table `db_kampus`.`dosen`
+MariaDB [(none)]>
+
+USER ADMIN
+
+Microsoft Windows [Version 10.0.26100.4061]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\LENOVO>cd c:\xampp\mysql\bin
+
+c:\xampp\mysql\bin>mysql -u user_admin -p
+Enter password: ********
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 175
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> DROP TABLE IF EXISTS temp_tabel;
+ERROR 1046 (3D000): No database selected
+MariaDB [(none)]> CREATE TABLE temp_tabel (id INT);
+ERROR 1046 (3D000): No database selected
+MariaDB [(none)]> use db_kampus;
+Database changed
+MariaDB [db_kampus]> CREATE TABLE temp_tabel (id INT);
+Query OK, 0 rows affected (0.029 sec)
+
+MariaDB [db_kampus]> DROP TABLE IF EXISTS temp_tabel;
+Query OK, 0 rows affected (0.009 sec)
+
+MariaDB [db_kampus]> show tables;
++---------------------+
+| Tables_in_db_kampus |
++---------------------+
+| dosen               |
+| mahasiswa           |
+| matakuliah          |
++---------------------+
+3 rows in set (0.001 sec)
+
+MariaDB [db_kampus]> CREATE TABLE temp_tabel (id INT);
+Query OK, 0 rows affected (0.008 sec)
+
+MariaDB [db_kampus]> show tables;
++---------------------+
+| Tables_in_db_kampus |
++---------------------+
+| dosen               |
+| mahasiswa           |
+| matakuliah          |
+| temp_tabel          |
++---------------------+
+4 rows in set (0.001 sec)
+
+MariaDB [db_kampus]> SELECT * FROM db_kampus.dosen;
++------------+--------------------+--------------------+
+| nip        | nama               | bidang             |
++------------+--------------------+--------------------+
+| 1980010101 | Dr. Andi Wijaya    | Pemrograman        |
+| 1982020202 | Dr. Lina Marlina   | Jaringan Komputer  |
+| 1983030303 | Dr. Taufik Hidayat | Basis Data         |
+| 1984040404 | Dr. Rina Wulandari | Sistem Informasi   |
+| 1985050505 | Dr. Bambang Suryo  | Teknik Elektro     |
+| 1986060606 | Dr. Sari Lestari   | Algoritma          |
+| 1987070707 | Dr. Yusuf Rahman   | Keamanan Informasi |
+| 1988080808 | Dr. Dewi Sartika   | Manajemen Proyek   |
+| 1989090909 | Dr. Anton Gunawan  | Kalkulus           |
+| 1990010101 | Dr. Nia Ramadhani  | Kewirausahaan      |
++------------+--------------------+--------------------+
+10 rows in set (0.001 sec)
+
+MariaDB [db_kampus]> SELECT * FROM db_kampus.mahasiswa;
++------------+-----------------+--------------------+
+| nim        | nama            | jurusan            |
++------------+-----------------+--------------------+
+| 1234567890 | Andi            | Informatika        |
+| 2201000001 | Asep Nugraha    | Teknik Informatika |
+| 2201000002 | Rina Marlina    | Sistem Informasi   |
+| 2201000003 | Budi Santoso    | Teknik Informatika |
+| 2201000004 | Siti Aminah     | Sistem Informasi   |
+| 2201000005 | Agus Pratama    | Teknik Informatika |
+| 2201000006 | Dina Lestari    | Sistem Informasi   |
+| 2201000007 | Tono Riyadi     | Teknik Elektro     |
+| 2201000008 | Maya Safitri    | Teknik Elektro     |
+| 2201000009 | Hendra Wijaya   | Teknik Informatika |
+| 2201000010 | Fitri Handayani | Sistem Informasi   |
++------------+-----------------+--------------------+
+11 rows in set (0.000 sec)
+
+MariaDB [db_kampus]> INSERT INTO db_kampus.matakuliah VALUES ('IF2020', 'Jaringan', 3);
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [db_kampus]> SELECT * FROM db_kampus.matakuliah;
++---------+---------------------------+------+
+| kode_mk | nama_mk                   | sks  |
++---------+---------------------------+------+
+| IF2020  | Jaringan                  |    3 |
+| MK001   | Algoritma dan Pemrograman |    3 |
+| MK002   | Struktur Data             |    3 |
+| MK003   | Basis Data                |    3 |
+| MK004   | Jaringan Komputer         |    3 |
+| MK005   | Pemrograman Web           |    3 |
+| MK006   | Kalkulus                  |    2 |
+| MK007   | Kewirausahaan             |    2 |
+| MK008   | Sistem Operasi            |    3 |
+| MK009   | Manajemen Proyek TI       |    2 |
+| MK010   | Keamanan Informasi        |    3 |
++---------+---------------------------+------+
+11 rows in set (0.000 sec)
+
+MariaDB [db_kampus]>
+
+USER KEUANGAN
+
+Microsoft Windows [Version 10.0.26100.4061]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\LENOVO>cd c:\xampp\mysql\bin
+
+c:\xampp\mysql\bin>mysql -u user_keu -p
+Enter password: ******
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 364
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SELECT * FROM db_kampus.tagihan;
+ERROR 1142 (42000): SELECT command denied to user 'user_keu'@'localhost' for table `db_kampus`.`tagihan`
+MariaDB [(none)]> UPDATE db_kampus.tagihan SET jumlah = 500000 WHERE id_tagihan = 'TGH001';
+ERROR 1142 (42000): UPDATE command denied to user 'user_keu'@'localhost' for table `db_kampus`.`tagihan`
+MariaDB [(none)]> restart
+    ->
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'restart' at line 1
+MariaDB [(none)]> exit
+Bye
+
+c:\xampp\mysql\bin>mysql -u user_keu -p
+Enter password: ******
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 365
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SELECT * FROM db_kampus.tagihan;
++------------+------------+---------+-------------+
+| id_tagihan | nim        | jumlah  | status      |
++------------+------------+---------+-------------+
+|         11 | 2201000001 | 2500000 | Belum Lunas |
+|         12 | 2201000002 | 2750000 | Lunas       |
+|         13 | 2201000003 | 3000000 | Belum Lunas |
+|         14 | 2201000004 | 2000000 | Lunas       |
+|         15 | 2201000005 | 2500000 | Belum Lunas |
+|         16 | 2201000006 | 2800000 | Lunas       |
+|         17 | 2201000007 | 2200000 | Belum Lunas |
+|         18 | 2201000008 | 2400000 | Lunas       |
+|         19 | 2201000009 | 2600000 | Belum Lunas |
+|         20 | 2201000010 | 2700000 | Lunas       |
++------------+------------+---------+-------------+
+10 rows in set (0.000 sec)
+
+MariaDB [(none)]> UPDATE db_kampus.tagihan SET jumlah = 500000 WHERE id_tagihan = 'TGH001';
+Query OK, 0 rows affected (0.002 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+MariaDB [(none)]> SELECT * FROM db_kampus.tagihan;
++------------+------------+---------+-------------+
+| id_tagihan | nim        | jumlah  | status      |
++------------+------------+---------+-------------+
+|         11 | 2201000001 | 2500000 | Belum Lunas |
+|         12 | 2201000002 | 2750000 | Lunas       |
+|         13 | 2201000003 | 3000000 | Belum Lunas |
+|         14 | 2201000004 | 2000000 | Lunas       |
+|         15 | 2201000005 | 2500000 | Belum Lunas |
+|         16 | 2201000006 | 2800000 | Lunas       |
+|         17 | 2201000007 | 2200000 | Belum Lunas |
+|         18 | 2201000008 | 2400000 | Lunas       |
+|         19 | 2201000009 | 2600000 | Belum Lunas |
+|         20 | 2201000010 | 2700000 | Lunas       |
++------------+------------+---------+-------------+
+10 rows in set (0.000 sec)
+
+MariaDB [(none)]> UPDATE db_kampus.tagihan SET jumlah = 500000 WHERE id_tagihan = '11';
+Query OK, 1 row affected (0.003 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [(none)]> SELECT * FROM db_kampus.tagihan;
++------------+------------+---------+-------------+
+| id_tagihan | nim        | jumlah  | status      |
++------------+------------+---------+-------------+
+|         11 | 2201000001 |  500000 | Belum Lunas |
+|         12 | 2201000002 | 2750000 | Lunas       |
+|         13 | 2201000003 | 3000000 | Belum Lunas |
+|         14 | 2201000004 | 2000000 | Lunas       |
+|         15 | 2201000005 | 2500000 | Belum Lunas |
+|         16 | 2201000006 | 2800000 | Lunas       |
+|         17 | 2201000007 | 2200000 | Belum Lunas |
+|         18 | 2201000008 | 2400000 | Lunas       |
+|         19 | 2201000009 | 2600000 | Belum Lunas |
+|         20 | 2201000010 | 2700000 | Lunas       |
++------------+------------+---------+-------------+
+10 rows in set (0.000 sec)
+
+MariaDB [(none)]> insert into tagihan values ('1','2000330032','34000000','Belum Lunas');
+ERROR 1046 (3D000): No database selected
+MariaDB [(none)]> use db_kampus;
+Database changed
+MariaDB [db_kampus]> insert into tagihan values ('1','2000330032','34000000','Belum Lunas');
+ERROR 1142 (42000): INSERT command denied to user 'user_keu'@'localhost' for table `db_kampus`.`tagihan`
+MariaDB [db_kampus]> SELECT * FROM db_kampus.tagihan;
++------------+------------+---------+-------------+
+| id_tagihan | nim        | jumlah  | status      |
++------------+------------+---------+-------------+
+|         11 | 2201000001 |  500000 | Belum Lunas |
+|         12 | 2201000002 | 2750000 | Lunas       |
+|         13 | 2201000003 | 3000000 | Belum Lunas |
+|         14 | 2201000004 | 2000000 | Lunas       |
+|         15 | 2201000005 | 2500000 | Belum Lunas |
+|         16 | 2201000006 | 2800000 | Lunas       |
+|         17 | 2201000007 | 2200000 | Belum Lunas |
+|         18 | 2201000008 | 2400000 | Lunas       |
+|         19 | 2201000009 | 2600000 | Belum Lunas |
+|         20 | 2201000010 | 2700000 | Lunas       |
++------------+------------+---------+-------------+
+10 rows in set (0.000 sec)
+
+MariaDB [db_kampus]>
